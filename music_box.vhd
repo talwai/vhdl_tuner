@@ -1,3 +1,6 @@
+--Aaditya Talwai and Sam Golini
+--VHDL model for music box: note-playing
+
 library ieee;
 use ieee.std_logic_1164.all;
 

@@ -1,3 +1,7 @@
+--Aaditya Talwai and Sam Golini
+--VHDL model for Recording/Playback controller
+
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
