@@ -74,19 +74,19 @@ architecture behavior of music_box is
         begin
             case note_mux_sel is
                 when "001" =>
-                    clock_divider_value <= 304878;
+                    clock_divider_value <= 82;
                 when "010" =>
-                    clock_divider_value <= 227273;
+                    clock_divider_value <= 110;
                 when "011" =>
-                    clock_divider_value <= 170068;
+                    clock_divider_value <= 147;
                 when "100" =>
-                    clock_divider_value <= 127551;
+                    clock_divider_value <= 196;
                 when "001" =>
-                    clock_divider_value <= 101215;
+                    clock_divider_value <= 247;
                 when "001" =>
-                    clock_divider_value <= 75758;
+                    clock_divider_value <= 330;
                 when "000" =>
-                    clock_divider_value <= 2147483647; -- highest possible value for int
+                    clock_divider_value <= 0; -- highest possible value for int
             end case;
         end process muxer;
 end behavior;
