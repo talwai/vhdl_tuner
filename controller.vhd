@@ -15,28 +15,33 @@ entity controller is
 
              clk : in std_logic; 
 
-             wre : out std_logic; -- write enable for BRAM
+				 wea : out std_logic_vector (0 downto 0);
             
-             write_count_en : out std_logic; -- count enable for write counter
-             read_count_en : out std_logic; -- count enable for read counter
-
-             timer_en : out std_logic; -- count enable for note timer
-
              playback_en : out std_logic; -- playback mux selector
-
-             note_out : out std_logic_vector(7 downto 0); -- output 8-bit (note_time & note)
+				  
+				 address_out: out std_logic_vector(4 downto 0);				 
+             
+				 note_out : out std_logic_vector(7 downto 0) -- output 8-bit (note_time & note)
     );
 end controller;
 
 architecture behavior of controller is
     
-    type statetype is {Init, Normal, Record_wait, Recording, Write, Playback_wait, Playback};
+    type statetype is 
+	  (Init, Normal, Record_wait, Recording, Write, Playback_wait, Playback);
     signal current_state, next_state : statetype;
-
+	
+	 signal write_count_en : std_logic;
+	 signal read_count_en : std_logic;
+	
     signal clkdiv : integer; 
     signal clock_divider_value : integer := 5000000; --clock divider, for 5 Hz note timer
     signal slow_clk : std_logic := '0';
-
+	 
+	 signal timer_en : std_logic;
+	 
+	 signal wea_signal : std_logic;
+	 
     signal timer_count: std_logic_vector (4 downto 0);
     signal read_count : std_logic_vector (4 downto 0);
     signal write_count : std_logic_vector (4 downto 0);
@@ -53,7 +58,7 @@ architecture behavior of controller is
         begin
             if rising_edge(clk) then -- on fast clock tick, increment clkdiv until it reaches divider value, then invert ce
                 if clkdiv = clock_divider_value - 1 then
-                	slow_clk = not(slow_clk);
+                	slow_clk <= not(slow_clk);
                 	clkdiv <= 0;
                 else 
                 	clkdiv <= clkdiv + 1;
@@ -83,15 +88,17 @@ architecture behavior of controller is
         end process;
         
         load_BRAM : process(clk, wre) is -- process to load BRAM on record
+		  begin
             if rising_edge(clk) and wre = '1' then
-                BRAM[write_count] <= timer_count & note_curr; -- TODO: replace with code to write to BRAM component
-                readstop = std_logic_vector (unsigned(readstop) + 1);
+					 data_out <= timer_count & note_curr; -- TODO: replace with code to write to BRAM component
+                readstop <= std_logic_vector (unsigned(readstop) + 1);
             end if;
         end process;
         
         read_BRAM : process(clk, playback_en) is -- process to read BRAM on playback
-            if rising_edge(clk) and playback_en = '1' then 
-                note_out <= BRAM[read_count]; -- TODO: replace with code to read from BRAM component
+        begin    
+				if rising_edge(clk) and playback_en = '1' then 
+                note_out <= data_in; -- TODO: replace with code to read from BRAM component
             end if;
         end process;
 
@@ -105,7 +112,7 @@ architecture behavior of controller is
         comblogic : process(clk) is -- state machine
         begin
             next_state <= current_state;
-            case currentstate is
+            case current_state is
                 when Init =>
                     if record_switch = '1' and playback_switch = '0' then 
                        next_state <= Record_wait;
@@ -134,23 +141,24 @@ architecture behavior of controller is
                     write_count_en <= '0';
                     if which_note /= note_curr then -- if input note changes
                     	timer_en <= '0'; 
-                    	wre <= '1'; --write to BRAM
+                    	wea_signal <= '1'; --write to BRAM
                     	next_state <= Write;
                     else null;
                     end if;
 
                 when Write =>
-                    wre <= '0';
+                    wea_signal <= '0';
                     next_state <= Init;
 
                 when Playback_wait =>
-                    if read_stop = "00000" then -- if no writes yet
+                    if readstop = "00000" then -- if no writes yet
                         next_state <= Init; -- go back and wait for write
                     else
                     	read_count_en <= '1'; -- tick read counter, enable playback
                         next_state <= Playback;
                         playback_en <= '1';  
-
+						  end if;
+						  
                 when Playback =>
                     read_count_en <= '0';
                     if read_count < readstop then
@@ -161,7 +169,8 @@ architecture behavior of controller is
                     	write_count <= "00000";
 
                     	playback_en <= '0'; -- disable playback
-                    	next_state <= Init
+                    	next_state <= Init;
+						  end if;
                 end case;
             end process;
     end behavior;
