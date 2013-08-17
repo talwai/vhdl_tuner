@@ -70,17 +70,17 @@ architecture behavior of music_box is
         begin
             case note_mux_sel is
                 when "001" =>
-                    dds_signal <= std_logic_vector(to_unsigned(82, dds_signal'length));
+                    dds_signal <= std_logic_vector(to_unsigned(254, dds_signal'length));
                 when "010" =>
-                    dds_signal <= std_logic_vector(to_unsigned(110, dds_signal'length));
+                    dds_signal <= std_logic_vector(to_unsigned(341, dds_signal'length));
                 when "011" =>
-                    dds_signal <= std_logic_vector(to_unsigned(147, dds_signal'length));
+                    dds_signal <= std_logic_vector(to_unsigned(456, dds_signal'length));
                 when "100" =>
-                    dds_signal <= std_logic_vector(to_unsigned(196, dds_signal'length));
+                    dds_signal <= std_logic_vector(to_unsigned(608, dds_signal'length));
                 when "101" =>
-                    dds_signal <= std_logic_vector(to_unsigned(247, dds_signal'length));
+                    dds_signal <= std_logic_vector(to_unsigned(766, dds_signal'length));
                 when "110" =>
-                    dds_signal <= std_logic_vector(to_unsigned(330, dds_signal'length));
+                    dds_signal <= std_logic_vector(to_unsigned(1024, dds_signal'length));
                 when "000" =>
                     dds_signal <= "000000000000"; -- zero input to DDS
 					 when others =>

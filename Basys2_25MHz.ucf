@@ -6,7 +6,7 @@
 # clock pin for Basys2 Board
 #NET "mclk" LOC = "B8"; # Bank = 0, Signal name = MCLK
 NET "clk_25MHz" LOC = "M6"; # Bank = 2, Signal name = UCLK
-NET "clk_25MHz" PERIOD = 40.0 ns HIGH 50%;
+NET "clk_25MHz" PERIOD = 757575.6 ns HIGH 50%; # Clock of 1320 Hz
 
 # Pin assignment for DispCtl
 # Connected to Basys2 onBoard 7seg display
