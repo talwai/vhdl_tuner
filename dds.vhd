@@ -32,7 +32,7 @@ begin
         end if;
     end process phase_accumulator;
 
-    lookup_table: process(
+    --TODO: lookup table interfacing with LUT Xilinx component
 
 end behavior;
 
