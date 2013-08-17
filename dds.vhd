@@ -24,16 +24,14 @@ begin
     phase_accumulator: process(phase_in, clk)
     begin
         if rising_edge(clk) then
-            if count = phase_in -1 then
-        	    count <= "000000000000";
-            else
-            	count <= count + 1;
+            	count <= count + phase_in;
             end if;
         end if;
     end process phase_accumulator;
 
     --TODO: lookup table interfacing with LUT Xilinx component
-
+    -- To convert from 2's complement (DDS output) to offset binary (DAC input)
+    -- invert MSB of DDS output
 end behavior;
 
 
